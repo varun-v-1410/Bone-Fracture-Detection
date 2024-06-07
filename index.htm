@@ -1,0 +1,64 @@
+<!--This is the complete frontend-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bone Fracture Detection</title>
+    <style>
+        html, body{
+            margin: 0%;
+            padding: 0%;
+            background-color: antiquewhite;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>Bone Fracture Detection</h1><br><br>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" style="font-size: larger;">
+            <!-- Removed the submit button -->
+        </form><br><br>
+        <p id="results" style="display: none;">
+            <span id="reply1" style="font-size: x-large;"></span><br><br>
+            <span id="reply2" style="font-size: x-large;"></span>
+        </p>
+    </center><br><br><br>
+    <div style="display: flex;columns: 2;column-gap: 55px;margin: 50px;">
+        <div><img src="https://clipart-library.com/2023/human-bones-realistic-x-ray-shots_1284-29690.jpg" 
+            style="width: 500px;height: 500px;"/></div>
+        <div>
+            <h2 style="font-size: xx-large;">What is Bone Fracture Detection and why Hugging-Face?</h2>
+            <p style="font-size: x-large;font-weight: 500;">Bone fracture detection utilizing Hugging Face's pretrained model and Hugging Face.js involves leveraging deep learning techniques for medical imaging analysis. By fine-tuning pretrained models on bone fracture datasets, the system learns to accurately identify fractures in X-ray images. Hugging Face.js facilitates the deployment of these models in web applications, enabling seamless integration into medical imaging platforms. With its user-friendly interface and efficient inference capabilities, healthcare professionals can swiftly analyze X-rays, aiding in timely diagnosis and treatment planning. This approach underscores the potential of pretrained models and web-based frameworks in advancing medical imaging technologies for improved patient care.</p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('file').addEventListener('change', async function(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('http://192.168.0.131:3000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Upload failed');
+                }
+
+                const responseData = await response.json();
+                console.log(responseData);
+                document.getElementById('results').style.display = "block";
+                document.getElementById('reply1').textContent = "Fractured: "+responseData[0].score*100+"%";
+                document.getElementById('reply2').textContent = "Non-Fractured: "+responseData[1].score*100+"%";
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
