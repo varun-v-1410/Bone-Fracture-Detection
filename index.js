@@ -1,52 +1,52 @@
 //This has the complete backend part
 
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const inf = require("@huggingface/inference");
-const cors = require('cors');
+const e_x_p_r_e_ss = require('express');
+const m_u_l_t_e_r = require('multer');
+const p_a_t_h = require('path');
+const f_s = require('fs');
+const i_n_f = require("@huggingface/inference");
+const c_o_r_s = require('cors');
 
-async function imageToBlob(filePath) {
+async function image_To_Blob(file_Path) {
     try {
-      const data = await fs.promises.readFile(".\\"+filePath);
+      const d_a_t_a = await f_s.promises.readFile(".\\"+file_Path);
 
-      const blob = Buffer.from(data, 'binary');
+      const b_l_o_b = Buffer.from(d_a_t_a, 'binary');
   
-      return blob;
+      return b_l_o_b;
     } catch (error) {
       throw error;
     }
 }
 
-async function rendering(blb){
-    const hflnference = new inf.HfInference("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");
-    const result = await hflnference.imageClassification({
-        data: blb,
+async function ren_der_ing(b_l_b){
+    const hf_lnfer_ence = new i_n_f.HfInference("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");
+    const res_ult = await hf_lnfer_ence.imageClassification({
+        data: b_l_b,
         model: "Heem2/bone-fracture-detection-using-xray",
     })
 
-    return result;
+    return res_ult;
 }
 
-const storage = multer.diskStorage({
+const sto_rage = m_u_l_t_e_r.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-      const ext = path.extname(file.originalname);
+      const ext = p_a_t_h.extname(file.originalname);
       cb(null, file.fieldname + '-' + Date.now() + ext);
     }
   });
-const upload = multer({ storage: storage});
+const up_load = m_u_l_t_e_r({ storage: sto_rage});
 
-const app = express();
-app.use(cors());
+const a_p_p = e_x_p_r_e_ss();
+a_p_p.use(c_o_r_s());
 
-app.post('/upload', upload.single('file'), async (req, res) => {
+a_p_p.post('/upload', up_load.single('file'), async (req, res) => {
     
-    imageToBlob(req.file.path).then((blob) => {
-        rendering(blob).then((result) => {
+    image_To_Blob(req.file.path).then((blob) => {
+        ren_der_ing(blob).then((result) => {
             console.log(result);
             res.json(result);
         }).catch((err) => {
@@ -60,6 +60,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 
 
-app.listen(3000, () => {
+a_p_p.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
