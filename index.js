@@ -20,7 +20,7 @@ async function image_To_Blob(file_Path) {
 }
 
 async function ren_der_ing(b_l_b){
-    const hf_lnfer_ence = new i_n_f.HfInference("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");
+    const hf_lnfer_ence = new i_n_f.HfInference("HF-access-token");
     const res_ult = await hf_lnfer_ence.imageClassification({
         data: b_l_b,
         model: "Heem2/bone-fracture-detection-using-xray",
